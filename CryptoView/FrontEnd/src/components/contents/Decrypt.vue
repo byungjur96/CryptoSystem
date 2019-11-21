@@ -7,8 +7,8 @@
             <option value="des">AES</option>
         </select>
         <div>Ciphertext를 입력해주세요.</div>
-        <input v-model="ciphertext" id="ciphertext" placeholder="Plaintext">
-        <button v-on:click="requestSubmit" id="submit">Encrypt</button>
+        <input v-model="ciphertext" id="ciphertext" placeholder="Ciphertext">
+        <button v-on:click="requestSubmit" id="submit">Decrypt</button>
     </div>
 </template>
 

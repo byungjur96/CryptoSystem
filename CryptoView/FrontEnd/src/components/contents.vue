@@ -1,6 +1,6 @@
 <template>
     <div id="contents">
-        <Encrypt></Encrypt>
+        <!-- <Encrypt></Encrypt> -->
         <Decrypt></Decrypt>
     </div>
 </template>
