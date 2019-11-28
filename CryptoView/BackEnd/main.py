@@ -14,11 +14,9 @@ def test():
 @app.route('/post', methods=['POST', 'GET'])
 def post():
     result = request.get_json(silent=True)
-    print("Input: ", result)
     response = {
         "ciphertext": result["plaintext"]
     }
-    print("Output: ", response)
     return jsonify(response)
 
 
