@@ -7,7 +7,8 @@
             <option value="des">AES</option>
         </select>
         <div>{{ message[mode] }}를 입력해주세요.</div>
-        <input v-model="text" id="plaintext" :placeholder="message[mode]">
+        <input v-model="input" id="input" :placeholder="message[mode]">
+        <div v-if="showResult" class="result">{{ output }}</div>
         <button v-on:click="requestSubmit" id="submit">{{ mode }}</button>
     </div>
 </template>
@@ -17,7 +18,9 @@ export default {
     name: 'contents',
     data: function() {
         return {
-            text: undefined,
+            input: undefined,
+            output: undefined,
+            showResult: false,
             category: "rsa",
             message: {
                 "Encrypt": "Plaintext",
@@ -28,9 +31,11 @@ export default {
     props: ['mode'],
     methods: {
         requestSubmit: function() {
-            if (this.$data.category !== "" && this.$data.text !== undefined) {
+            if (this.$data.category !== "" && this.$data.input !== undefined) {
+                this.$data.showResult = true;
+                this.$data.output = this.$data.input
                 console.log(this.$data.category);
-                console.log(this.$data.text);
+                console.log(this.$data.input);
                 console.log(this.$props.mode);
             } else {
                 alert("양식에 맞춰서 다시 제출해 주세요.");
@@ -69,6 +74,14 @@ export default {
         margin-left: 0;
         margin-right: 0;
         background-color: white;
+    }
+    .result {
+        width: 80%;
+        height: 50px;
+        border: 1px solid black;
+        display: flex;
+        justify-content: center;
+        align-items: center;
     }
 }
 </style>
