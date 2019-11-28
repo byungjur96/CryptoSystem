@@ -1,14 +1,27 @@
 <template>
     <div id="side-menu" class="side-open">
-        <div href="" class="side-option">Encrypt</div>
-        <div href="" class="side-option">Decrypt</div>
+        <div v-on:click="clickEncrypt" class="side-option">Encrypt</div>
+        <div v-on:click="clickDecrypt" class="side-option">Decrypt</div>
         <div href="" class="side-option">History</div>
     </div>
 </template>
 
 <script>
 export default {
-  name: 'side-bar'
+  name: 'side-bar',
+  data: function() {
+      return {
+          isSideOpened: true
+      }
+  },
+  methods: {
+        clickEncrypt: function() {
+            this.$emit('makeEncrypt');
+        },
+        clickDecrypt: function() {
+            this.$emit('makeDecrypt');
+        }
+    },
 }
 </script>
 

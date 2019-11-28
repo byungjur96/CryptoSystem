@@ -1,8 +1,15 @@
 <template>
   <div>
-    <SideMenu v-if="openSide"></SideMenu>
-    <NavHeader v-on:is-side-opened="menuClickEvent"></NavHeader>
-    <Contents></Contents>
+    <SideMenu 
+      v-if="openSide"
+      v-on:makeEncrypt="changeEncrypt"
+      v-on:makeDecrypt="changeDecrypt">
+    </SideMenu>
+    <NavHeader 
+      v-bind:is-side-opened="openSide"
+      v-on:changeMenuBtn="menuClickEvent">
+    </NavHeader>
+    <Contents v-bind:mode="changeMode"></Contents>
   </div>
 </template>
 
@@ -15,7 +22,8 @@ export default {
   name: 'app',
   data: function() {
     return {
-      isSideOpened: false
+      isSideOpened: false,
+      mode: "Encrypt"
     }
   },
   components: {
@@ -24,11 +32,22 @@ export default {
   methods: {
     menuClickEvent: function() {
       this.$data.isSideOpened = !this.$data.isSideOpened;
+    },
+    changeEncrypt: function() {
+      this.$data.isSideOpened = !this.$data.isSideOpened;
+      this.$data.mode = "Encrypt";
+    },
+    changeDecrypt: function() {
+      this.$data.isSideOpened = !this.$data.isSideOpened;
+      this.$data.mode = "Decrypt";
     }
   },
   computed: {
     openSide: function() {
       return this.$data.isSideOpened;
+    },
+    changeMode: function() {
+      return this.$data.mode;
     }
   }
 }

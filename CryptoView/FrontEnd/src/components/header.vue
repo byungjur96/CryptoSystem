@@ -14,18 +14,21 @@ export default {
     name: 'nav-header',
     data: function() {
         return {
-            isSideOpened: false
+            openSide: false
         }
     },
+    props: ['isSideOpened'],
     methods: {
         changeMenuBtn: function() {
-            this.$data.isSideOpened = !this.$data.isSideOpened;
-            this.$emit('is-side-opened');
+            this.$emit('changeMenuBtn');
         },
     },
     computed: {
+        tuneSide: function() {
+            this.$data.openSide = this.$props.isSideOpened;
+        },
         sideBtnStyle: function() {
-            if (!this.$data.isSideOpened) { return {'side-menu-open':true }; }
+            if (!this.$props.isSideOpened) { return {'side-menu-open':true }; }
             else { return {'side-menu-close':true }; }
         }
     }
