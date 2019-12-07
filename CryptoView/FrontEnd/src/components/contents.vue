@@ -5,6 +5,7 @@
             <option value="rsa">RSA</option>
             <option value="des">DES</option>
             <option value="des">AES</option>
+            <option value="des">ElGamal</option>
         </select>
         <div>{{ message[mode] }}를 입력해주세요.</div>
         <input v-model="input" id="input" :placeholder="message[mode]">
