@@ -90,18 +90,14 @@ class RSA:
 
 
 # 지수가 큰 거듭 제곱으로 나타낼 수 있는 수의 나머지를 빠르게 구하는 함수
-def fast_c(a, n, z):
-    result = 1
-    x = a % z
-    while n > 0:
-        if (n % 2) == 1:
-            result = (result * x) % z
-        x = (x ** 2) % z
-        if (n % 2) == 1:
-            n = int((n - 1) / 2)
-        else:
-            n = n / 2
-    return result
+def fast_c(a, e, n):
+    bin_e = bin(e)[2:]
+    b = 1
+    for i in range(0, len(bin_e)):
+        b = (b*b) % n
+        if bin_e[i] == '1':
+            b = (b*a) % n
+    return b
 
 
 # 암호화를 진행하는 함수
@@ -114,7 +110,6 @@ def encrypt():
     d = rsa.find_d(e, pi)
     mesg = input('Write a message to Encrypt: ')
     log = "Encryping '" + mesg + "'"
-    print_mesg(log)
 
     code = [ord(char) for char in mesg]
     crypto = []
@@ -128,47 +123,6 @@ def encrypt():
 
 
 # 복호화를 진행하는 함수
-def decrypt():
-    n1 = None
-    n2 = None
-    while n1 is None or n2 is None or (n1 != n2):
-        e, n1 = map(int, input('Enter a Public Key: ').split(','))
-        d, n2 = map(int, input('Enter a Private Key: ').split(','))
-
-    pw = list(map(int, input('Write a message to Decrypt: ').split(',')))
-    mesg = ''.join([chr(fast_c(c, d, n1)) for c in pw])
-    print_mesg('Decrypting')
-    print("The message was '" + mesg + "'")
-    print()
-
-
-# 로딩 진행을 프린트해주는 함수
-def print_mesg(msg):
-    print(msg, end="")
-    for i in range(5):
-        sys.stdout.write(".")
-        sys.stdout.flush()
-        sleep(0.5)
-    print()
-
-
-def main():
-    option = -1
-    while option != '0':
-        print("<Option>")
-        print("1. Encrypt")
-        print("2. Decrypt")
-        print("Enter '0' to exit")
-        option = input('Enter Option: ')
-        if option == '1':
-            encrypt()
-        elif option == '2':
-            decrypt()
-        elif option == '0':
-            print('End this Program')
-        else:
-            print('Wrong Option! Try again')
-
-
-if __name__ == '__main__':
-    main()
+def decrypt(param):
+    [d, n, cipher] = param
+    return fast_c(cipher, d, n)
