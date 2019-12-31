@@ -15,6 +15,8 @@
 </template>
 
 <script>
+import axios from 'axios';
+
 export default {
     name: 'contents',
     data: function() {
@@ -35,9 +37,15 @@ export default {
             if (this.$data.category !== "" && this.$data.input !== undefined) {
                 this.$data.showResult = true;
                 this.$data.output = this.$data.input
-                console.log(this.$data.category);
-                console.log(this.$data.input);
-                console.log(this.$props.mode);
+                let param = {
+                    "ciphertext": "1220703125",
+                    "d": "9178373396735665477",
+                    "n": "9943237852845877651"
+                }
+                axios.post("http://0.0.0.0:5000/dec/rsa", param)
+                    .then(res => {
+                        console.log(res.data);
+                    })
             } else {
                 alert("양식에 맞춰서 다시 제출해 주세요.");
             }
