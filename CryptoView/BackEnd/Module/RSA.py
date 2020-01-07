@@ -124,5 +124,7 @@ def encrypt():
 
 # 복호화를 진행하는 함수
 def decrypt(param):
-    [d, n, cipher] = param
+    d = param["d"]
+    n = param["n"]
+    cipher = param["ciphertext"]
     return fast_c(cipher, d, n)
