@@ -23,7 +23,7 @@ export default {
   data: function() {
     return {
       isSideOpened: false,
-      mode: "Encrypt"
+      mode: "dec"
     }
   },
   components: {
@@ -35,11 +35,11 @@ export default {
     },
     changeEncrypt: function() {
       this.$data.isSideOpened = !this.$data.isSideOpened;
-      this.$data.mode = "Encrypt";
+      this.$data.mode = "enc";
     },
     changeDecrypt: function() {
       this.$data.isSideOpened = !this.$data.isSideOpened;
-      this.$data.mode = "Decrypt";
+      this.$data.mode = "dec";
     }
   },
   computed: {

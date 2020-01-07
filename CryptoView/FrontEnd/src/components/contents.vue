@@ -9,8 +9,15 @@
         </select>
         <div>{{ message[mode] }}를 입력해주세요.</div>
         <input v-model="input" id="input" :placeholder="message[mode]">
+        <div>
+            <div>Parameter를 입력해주세요.</div>
+            <div v-for="param in params[category]" v-bind:key="param[0]">
+                <span class="param-info">{{ param }}</span>
+                <input class="param" v-model="value[param]" :placeholder="param">
+            </div>
+        </div>
         <div v-if="showResult" class="result">{{ output }}</div>
-        <button v-on:click="requestSubmit" id="submit">{{ mode }}</button>
+        <button v-on:click="requestSubmit" id="submit">{{ option }}</button>
     </div>
 </template>
 
@@ -24,10 +31,12 @@ export default {
             input: undefined,
             output: undefined,
             showResult: false,
+            params: {},
+            value: {},
             category: "rsa",
             message: {
-                "Encrypt": "Plaintext",
-                "Decrypt": "Ciphertext"
+                "enc": "Plaintext",
+                "dec": "Ciphertext"
             }
         }
     },
@@ -35,22 +44,39 @@ export default {
     methods: {
         requestSubmit: function() {
             if (this.$data.category !== "" && this.$data.input !== undefined) {
+                let param = {};
                 this.$data.showResult = true;
-                this.$data.output = this.$data.input
-                let param = {
-                    "ciphertext": "1220703125",
-                    "d": "9178373396735665477",
-                    "n": "9943237852845877651"
+                param["ciphertext"] = this.$data.input;
+                for (let p of this.$data.params[this.$data.category]) {
+                    param[p] = this.$data.value[p];
                 }
-                axios.post("http://0.0.0.0:5000/dec/rsa", param)
+                axios.post("http://0.0.0.0:5000/"+this.$props.mode+"/"+this.$data.category, param)
                     .then(res => {
                         console.log(res.data);
-                    })
+                        this.$data.output = res.data["plaintext"]
+                    });
             } else {
                 alert("양식에 맞춰서 다시 제출해 주세요.");
             }
+        },
+        getParam: function() {
+            axios.get("http://0.0.0.0:5000/"+this.$props.mode+"/list")
+                .then(res => {
+                    this.$data.params = res.data;
+                    console.log(this.$data.params);
+                });
         }
-    }
+    },
+    computed: {
+        option: function() {
+            if (this.$props.mode === "enc") return "Encrypt";
+            else if (this.$props.mode === "dec") return "Decrypt";
+            else return undefined;
+        }
+    },
+    created: function() {
+        this.getParam();
+    },
 }
 </script>
 
@@ -91,6 +117,17 @@ export default {
         display: flex;
         justify-content: center;
         align-items: center;
+    }
+    .param-info {
+        width: 15px;
+        margin-top: 5px;
+        margin-bottom: 5px;
+        margin-left: 4px;
+    }
+    .param {
+        width: calc(100% - 25px);
+        margin-top: 5px;
+        margin-bottom: 5px;
     }
 }
 </style>
