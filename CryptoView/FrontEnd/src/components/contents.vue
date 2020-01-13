@@ -9,12 +9,11 @@
         </select>
         <div>{{ message[mode] }}를 입력해주세요.</div>
         <input v-model="input" id="input" :placeholder="message[mode]">
-        <div>
-            <div>Parameter를 입력해주세요.</div>
-            <div v-for="param in params[category]" v-bind:key="param[0]">
-                <span class="param-info">{{ param }}</span>
-                <input class="param" v-model="value[param]" :placeholder="param">
-            </div>
+        <!-- Parameter -->
+        <div>Parameter를 입력해주세요.</div>
+        <div v-for="param in params[category]" v-bind:key="param[0]">
+            <span class="param-info">{{ param }}</span>
+            <input class="param" v-model="value[param]" :placeholder="param">
         </div>
         <div v-if="showResult" class="result">{{ output }}</div>
         <button v-on:click="requestSubmit" id="submit">{{ option }}</button>

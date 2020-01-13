@@ -1,4 +1,4 @@
-from Tools.BaseChange import *
+from Module.Tools import BaseChange
 
 Sbox = [
             ['63', '7C', '77', '7B', 'F2', '6B', '6F', 'C5', '30', '01', '67', '2B', 'FE', 'D7', 'AB', '76'],

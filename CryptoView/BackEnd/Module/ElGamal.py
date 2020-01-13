@@ -1,4 +1,4 @@
-from Tools.Calculator import squareAndMultiply, extendedEuclidean
+from Module.Tools.Calculator import squareAndMultiply, extendedEuclidean
 
 def decrypt(param):
     q = 2934201397

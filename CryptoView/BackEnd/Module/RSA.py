@@ -1,5 +1,5 @@
 import random
-from Tools.Calculator import *
+from Module.Tools.Calculator import *
 
 
 class RSA:
