@@ -68,6 +68,7 @@ export default {
     },
     computed: {
         option: function() {
+            this.getParam();
             if (this.$props.mode === "enc") return "Encrypt";
             else if (this.$props.mode === "dec") return "Decrypt";
             else return undefined;
@@ -75,7 +76,7 @@ export default {
     },
     created: function() {
         this.getParam();
-    },
+    }
 }
 </script>
 
