@@ -1,3 +1,5 @@
+from Tools.BaseChange import *
+
 Sbox = [
             ['63', '7C', '77', '7B', 'F2', '6B', '6F', 'C5', '30', '01', '67', '2B', 'FE', 'D7', 'AB', '76'],
             ['CA', '82', 'C9', '7D', 'FA', '59', '47', 'F0', 'AD', 'D4', 'A2', 'AF', '9C', 'A4', '72', 'C0'],
@@ -43,10 +45,8 @@ hex_dic = {
 	'F': '1111',
 }
 
-
 P = "000102030405060708090A0B0C0D0E0F"
 K = "01010101010101010101010101010101"
-
 
 def printhex(a):
 	for i in range(len(a)):
@@ -55,34 +55,8 @@ def printhex(a):
 		else:
 			print(a[i], end="")
 
-def hextobi(a):
-	result = ""
-	for i in range(len(a)):
-		value = ""
-		if ord('A') <= ord(a[i]) <= ord('F'):
-			target = ord(a[i]) - ord('A') + 10
-		else:
-			target = int(a[i])
-		for k in range(4):
-			if target % 2 == 1:
-				value = "1" + value
-			else:
-				value = "0" + value
-			target = target // 2
-		result += value
-	return result
-
 def dimension(a):
 	return [a[0:4], a[4:8], a[8:12], a[12:16]]
-
-def hextodec(a):
-	val = 0
-	for j in range(2):
-		if ord('A') <= ord(a[j]) <= ord('F'):
-				val += (ord(a[j]) - ord('A') + 10) * (16 ** (1 - j))
-		else:
-			val += (int(a[j])) * (16 ** (1 - j))
-	return val
 
 def hextotable(a):
 	text_len = len(a) // 2
@@ -93,33 +67,6 @@ def hextotable(a):
 			val += a[2 * i + j]
 		result.append(val)
 	return result	
-
-def bitohex(a):
-	result = ""
-	text_len = len(a) // 4
-	for i in range(text_len):
-		value = 0
-		res = 0
-		for k in range(4):
-			res += (int(a[4*i + k])*(2**(3-k)))
-		if res > 9:
-			res = chr(ord('A')+ res - 10)
-		else:
-			res = str(res)
-		result += res
-	return result
-
-def dectohex(a):
-	if a//16 > 9:
-		result = chr(ord('A') + a // 16 - 10)
-	else:
-		result = str(a//16)
-	if a % 16 > 9:
-		result += chr(ord('A') + a % 16 - 10)
-	else:
-		result += str(a % 16)
-		
-	return result
 
 def addRoundKey(a, b):
 	key_len = len(a)
@@ -206,6 +153,7 @@ def main():
 	# ShiftRows
 	text = hextotable(text)
 	text = shiftRows(text)
+	print(text)
 	
 	# MixColumns
 	result = mixColumns(text)
