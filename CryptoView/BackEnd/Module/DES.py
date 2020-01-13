@@ -27,23 +27,3 @@ def encrypt():
 
 def decrypt():
     return
-
-def main():
-    option = -1
-    while option != '0':
-        print("<Option>")
-        print("1. Encrypt")
-        print("2. Decrypt")
-        print("Enter '0' to exit")
-        option = input('Enter Option: ')
-        if option == '1':
-            encrypt()
-        elif option == '2':
-            decrypt()
-        elif option == '0':
-            print('End this Program')
-        else:
-            print('Wrong Option! Try again')
-
-if __name__ == '__main__':
-    main()
