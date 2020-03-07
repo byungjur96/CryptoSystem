@@ -7,13 +7,18 @@ from flask_cors import CORS
 app = Flask(__name__)
 CORS(app)
 
+@app.route('/alg/list', methods=['GET'])
+def returnAlgList():
+    algorithms = ['RSA', 'DES', 'AES', 'ElGamal']
+    return jsonify(algorithms), 200
+
 # 암호화 과정에서 필요한 parameter의 종류와 개수를 return한다.
 @app.route('/enc/list', methods=['GET'])
 def returnEncParam():
     response = {
         "rsa": ['e', 'n'],
-        "DES": [],
-        "AES": [],
+        "DES": ['key'],
+        "AES": ['key'],
         "ElGamal": []
     }
     return jsonify(response), 200
@@ -22,9 +27,9 @@ def returnEncParam():
 @app.route('/dec/list', methods=['GET'])
 def returnDecParam():
     response = {
-        "rsa": ['d', 'n'],
-        "DES": [],
-        "AES": [],
+        "RSA": ['d', 'n'],
+        "DES": ['key'],
+        "AES": ['key'],
         "ElGamal": []
     }
     return jsonify(response), 200

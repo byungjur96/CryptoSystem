@@ -1,15 +1,21 @@
 <template>
     <div class="container">
-        <div>암호화 알고리즘을 골라주세요.</div>
-        <select class="category" v-model="category">
-            <option value="rsa">RSA</option>
-            <option value="des">DES</option>
-            <option value="des">AES</option>
-            <option value="des">ElGamal</option>
-        </select>
-        <div>{{ message[mode] }}를 입력해주세요.</div>
-        <input v-model="input" id="input" :placeholder="message[mode]">
-        <!-- Parameter -->
+        <!-- Encryption / Decryption -->
+        <div>수행할 작업을 골라주세요.</div>
+        <p>
+            <input type="radio" id="work1" value="enc" v-model="work">
+            <label for="work1">Encryption</label>
+        </p>
+        <p>
+            <input type="radio" id="work2" value="dec" v-model="work">
+            <label for="work2">Decryption</label>
+        </p>
+
+        <!-- Text 입력 -->
+        <div>{{ message[work] }}를 입력해주세요.</div>
+        <input v-model="input" id="input" :placeholder="message[work]">
+
+        <!-- Parameter 입력 -->
         <div>Parameter를 입력해주세요.</div>
         <div v-for="param in params[category]" v-bind:key="param[0]">
             <span class="param-info">{{ param }}</span>
@@ -30,6 +36,7 @@ export default {
             input: undefined,
             output: undefined,
             showResult: false,
+            work: "enc",
             params: {},
             value: {},
             category: "rsa",
@@ -72,6 +79,12 @@ export default {
             if (this.$props.mode === "enc") return "Encrypt";
             else if (this.$props.mode === "dec") return "Decrypt";
             else return undefined;
+        },
+        asciiVal: function() {
+            this.$data.input.charCodeAt()
+        },
+        works: function() {
+            console.log(this.$data.work);
         }
     },
     created: function() {
