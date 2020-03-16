@@ -2,8 +2,7 @@
   <div>
     <SideMenu 
       v-if="openSide"
-      v-on:makeEncrypt="changeEncrypt"
-      v-on:makeDecrypt="changeDecrypt">
+      v-on:menuSelect="menuClickEvent">
     </SideMenu>
     <NavHeader 
       v-bind:is-side-opened="openSide"

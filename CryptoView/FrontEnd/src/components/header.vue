@@ -4,7 +4,7 @@
             <div v-bind:class="sideBtnStyle"></div>
             <div v-bind:class="sideBtnStyle"></div>
         </div>
-        <h2>CryptoView</h2>
+        <h2> {{ returnName }} </h2>
         <div id="info">I</div>
     </div>
 </template>
@@ -24,6 +24,9 @@ export default {
         },
     },
     computed: {
+        returnName: function() {
+            return this.$store.state.algorithm;
+        },
         tuneSide: function() {
             this.$data.openSide = this.$props.isSideOpened;
         },
