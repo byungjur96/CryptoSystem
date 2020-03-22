@@ -2,7 +2,6 @@ var path = require('path')
 var webpack = require('webpack')
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 
-
 module.exports = {
   entry: './src/main.js',
   output: {
@@ -18,14 +17,15 @@ module.exports = {
           'vue-style-loader',
           'css-loader'
         ],
-      },      {
+      },      
+      {
         test: /\.vue$/,
         loader: 'vue-loader',
-        options: {
-          loaders: {
-          }
-          // other vue-loader options go here
-        }
+        // options: {
+        //   loaders: {
+        //   }
+        //   // other vue-loader options go here
+        // }
       },
       {
         test: /\.js$/,
@@ -42,7 +42,20 @@ module.exports = {
     ]
   },
   optimization: {
-    minimizer: [new UglifyJsPlugin()],
+    minimize: false
+  //   minimizer: [
+  //     // we specify a custom UglifyJsPlugin here to get source maps in production
+  //     new UglifyJsPlugin({
+  //       cache: true,
+  //       parallel: true,
+  //       uglifyOptions: {
+  //         compress: false,
+  //         ecma: 6,
+  //         mangle: true
+  //       },
+  //       sourceMap: true
+  //     })
+  //   ],
   },
   resolve: {
     alias: {
@@ -70,12 +83,12 @@ if (process.env.NODE_ENV === 'production') {
         NODE_ENV: '"production"'
       }
     }),
-    new webpack.optimize.UglifyJsPlugin({
-      sourceMap: true,
-      compress: {
-        warnings: false
-      }
-    }),
+    // new webpack.optimize.UglifyJsPlugin({
+    //   sourceMap: true,
+    //   compress: {
+    //     warnings: false
+    //   }
+    // }),
     new webpack.LoaderOptionsPlugin({
       minimize: true
     })
