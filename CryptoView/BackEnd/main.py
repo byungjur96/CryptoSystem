@@ -12,27 +12,26 @@ def returnAlgList():
     algorithms = ['RSA', 'DES', 'AES', 'ElGamal']
     return jsonify(algorithms), 200
 
-# 암호화 과정에서 필요한 parameter의 종류와 개수를 return한다.
-@app.route('/enc/list', methods=['GET'])
-def returnEncParam():
+
+# 암호화/복호화 과정에서 필요한 parmeter의 종류와 개수를 return한다.
+@app.route('/params', methods=["GET"])
+def returnParams():
     response = {
-        "rsa": ['e', 'n'],
-        "DES": ['key'],
-        "AES": ['key'],
-        "ElGamal": []
+        "enc" : {
+            "rsa": ['e', 'n'],
+            "DES": ['key'],
+            "AES": ['key'],
+            "ElGamal": []
+        },
+        "dec": {
+            "rsa": ['d', 'n'],
+            "DES": ['key'],
+            "AES": ['key'],
+            "ElGamal": []
+        }
     }
     return jsonify(response), 200
 
-# 복호화 과정에서 필요한 parameter의 종류와 개수를 return한다.
-@app.route('/dec/list', methods=['GET'])
-def returnDecParam():
-    response = {
-        "RSA": ['d', 'n'],
-        "DES": ['key'],
-        "AES": ['key'],
-        "ElGamal": []
-    }
-    return jsonify(response), 200
 
 @app.route('/test', methods=['GET'])
 def test():
@@ -40,6 +39,7 @@ def test():
         "ciphertext": "test"
     }
     return jsonify(response), 200
+
 
 @app.route('/dec/rsa', methods=['POST', 'GET'])
 def post():

@@ -3,11 +3,11 @@
         <!-- Encryption / Decryption -->
         <div>수행할 작업을 골라주세요.</div>
         <p>
-            <input type="radio" id="work1" value="enc" v-model="work">
+            <input type="radio" id="work1" value="enc" v-model="work" v-on:click="getParam">
             <label for="work1">Encryption</label>
         </p>
         <p>
-            <input type="radio" id="work2" value="dec" v-model="work">
+            <input type="radio" id="work2" value="dec" v-model="work" v-on:click="getParam">
             <label for="work2">Decryption</label>
         </p>
 
@@ -17,7 +17,7 @@
 
         <!-- Parameter 입력 -->
         <div>Parameter를 입력해주세요.</div>
-        <div v-for="param in params[category]" v-bind:key="param[0]">
+        <div v-for="param in params[work][category]" v-bind:key="param[work]">
             <span class="param-info">{{ param }}</span>
             <input class="param" v-model="value[param]" :placeholder="param">
         </div>
@@ -53,12 +53,11 @@ export default {
                 let param = {};
                 this.$data.showResult = true;
                 param["ciphertext"] = this.$data.input;
-                for (let p of this.$data.params[this.$data.category]) {
+                for (let p of this.$data.params[this.$data.work][this.$data.category]) {
                     param[p] = this.$data.value[p];
                 }
-                axios.post("http://0.0.0.0:5000/"+this.$props.mode+"/"+this.$data.category, param)
+                axios.post("http://0.0.0.0:5000/"+this.$data.work+"/"+this.$data.category, param)
                     .then(res => {
-                        console.log(res.data);
                         this.$data.output = res.data["plaintext"]
                     });
             } else {
@@ -66,25 +65,21 @@ export default {
             }
         },
         getParam: function() {
-            axios.get("http://0.0.0.0:5000/"+this.$props.mode+"/list")
+            axios.get("http://0.0.0.0:5000/params")
                 .then(res => {
                     this.$data.params = res.data;
-                    console.log(this.$data.params);
                 });
         }
     },
     computed: {
         option: function() {
             this.getParam();
-            if (this.$props.mode === "enc") return "Encrypt";
-            else if (this.$props.mode === "dec") return "Decrypt";
+            if (this.$data.work === "enc") return "Encrypt";
+            else if (this.$data.work === "dec") return "Decrypt";
             else return undefined;
         },
         asciiVal: function() {
             this.$data.input.charCodeAt()
-        },
-        works: function() {
-            console.log(this.$data.work);
         }
     },
     created: function() {

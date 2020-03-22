@@ -1,5 +1,7 @@
 var path = require('path')
 var webpack = require('webpack')
+const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
+
 
 module.exports = {
   entry: './src/main.js',
@@ -39,6 +41,9 @@ module.exports = {
       }
     ]
   },
+  optimization: {
+    minimizer: [new UglifyJsPlugin()],
+  },
   resolve: {
     alias: {
       'vue$': 'vue/dist/vue.esm.js'
@@ -76,3 +81,4 @@ if (process.env.NODE_ENV === 'production') {
     })
   ])
 }
+
