@@ -17,7 +17,7 @@
 
         <!-- Parameter 입력 -->
         <div>Parameter를 입력해주세요.</div>
-        <div v-for="param in params[work][category]" v-bind:key="param[work]">
+        <div v-for="param in params[work][algorithm]" v-bind:key="param[work]">
             <span class="param-info">{{ param }}</span>
             <input class="param" v-model="value[param]" :placeholder="param">
         </div>
@@ -39,7 +39,6 @@ export default {
             work: "enc",
             params: {},
             value: {},
-            category: "rsa",
             message: {
                 "enc": "Plaintext",
                 "dec": "Ciphertext"
@@ -49,14 +48,14 @@ export default {
     props: ['mode'],
     methods: {
         requestSubmit: function() {
-            if (this.$data.category !== "" && this.$data.input !== undefined) {
+            if (this.$store.state.algorithm !== "" && this.$data.input !== undefined) {
                 let param = {};
                 this.$data.showResult = true;
                 param[ this.$data.message[this.$data.work] ] = this.$data.input;
-                for (let p of this.$data.params[this.$data.work][this.$data.category]) {
+                for (let p of this.$data.params[this.$data.work][this.$store.state.algorithm]) {
                     param[p] = this.$data.value[p];
                 }
-                axios.post("http://0.0.0.0:5000/"+this.$data.category+"/"+this.$data.work, param)
+                axios.post("http://0.0.0.0:5000/"+this.$store.state.algorithm+"/"+this.$data.work, param)
                     .then(res => {
                         console.log(res.data);
                         this.$data.output = res.data["result"]
@@ -81,7 +80,11 @@ export default {
         },
         asciiVal: function() {
             this.$data.input.charCodeAt()
+        },
+        algorithm: function() {
+            return this.$store.state.algorithm;
         }
+
     },
     created: function() {
         this.getParam();
@@ -106,10 +109,6 @@ export default {
         width: 80%;
     }
 
-    .category {
-        border: solid black 1px;
-    }
-
     #submit {
         width: 100%;
         height: 32px;;
@@ -128,13 +127,13 @@ export default {
         align-items: center;
     }
     .param-info {
-        width: 15px;
+        width: 20px;
         margin-top: 5px;
         margin-bottom: 5px;
         margin-left: 4px;
     }
     .param {
-        width: calc(100% - 25px);
+        width: calc(100% - 30px);
         margin-top: 5px;
         margin-bottom: 5px;
     }

@@ -23,7 +23,8 @@ export default {
   },
   methods: {
         changeAlg: function(string) {
-            this.$store.state.algorithm = string;
+            this.$store.commit('change', string);
+            console.log(this.$store.state.algorithm);
             this.$emit('menuSelect');
         },
         getAlgorithm: function() {

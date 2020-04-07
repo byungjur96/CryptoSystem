@@ -31,14 +31,6 @@ export default {
   methods: {
     menuClickEvent: function() {
       this.$data.isSideOpened = !this.$data.isSideOpened;
-    },
-    changeEncrypt: function() {
-      this.$data.isSideOpened = !this.$data.isSideOpened;
-      this.$data.mode = "enc";
-    },
-    changeDecrypt: function() {
-      this.$data.isSideOpened = !this.$data.isSideOpened;
-      this.$data.mode = "dec";
     }
   },
   computed: {

@@ -9,7 +9,9 @@ const store = new Vuex.Store({
         algorithm: "RSA"
     },
     mutations: {
-
+        change (state, alg) {
+            state.algorithm = alg;
+        }
         }
     }
 );
