@@ -56,7 +56,7 @@ export default {
                 for (let p of this.$data.params[this.$data.work][this.$data.category]) {
                     param[p] = this.$data.value[p];
                 }
-                axios.post("http://0.0.0.0:5000/"+this.$data.work+"/"+this.$data.category, param)
+                axios.post("http://0.0.0.0:5000/"+this.$data.category+"/"+this.$data.work, param)
                     .then(res => {
                         console.log(res.data);
                         this.$data.output = res.data["result"]
