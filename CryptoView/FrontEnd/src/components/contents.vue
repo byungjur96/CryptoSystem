@@ -52,13 +52,14 @@ export default {
             if (this.$data.category !== "" && this.$data.input !== undefined) {
                 let param = {};
                 this.$data.showResult = true;
-                param["ciphertext"] = this.$data.input;
+                param[ this.$data.message[this.$data.work] ] = this.$data.input;
                 for (let p of this.$data.params[this.$data.work][this.$data.category]) {
                     param[p] = this.$data.value[p];
                 }
                 axios.post("http://0.0.0.0:5000/"+this.$data.work+"/"+this.$data.category, param)
                     .then(res => {
-                        this.$data.output = res.data["plaintext"]
+                        console.log(res.data);
+                        this.$data.output = res.data["result"]
                     });
             } else {
                 alert("양식에 맞춰서 다시 제출해 주세요.");

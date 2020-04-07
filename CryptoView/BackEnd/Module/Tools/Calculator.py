@@ -1,12 +1,12 @@
 # 범위 내의 소수를 모두 구하는 함수
-def find_prime(variable):
-    result = set({})
-    a, b = map(int, input('Define range of '+variable+':').split(','))
-    for n in range(a, b):
+def find_prime(maximum):
+    result = list()
+    for n in range(2, maximum):
         state = True
         for i in range(2, n):
             if n % i == 0:
                 state = False
+                break
         if state:
             result.add(n)
     return result

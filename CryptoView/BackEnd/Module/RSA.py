@@ -4,22 +4,18 @@ from Module.Tools.Calculator import *
 
 class RSA:
     # 지정한 범위 내 임의의 소수를 출력하는 함수
-    def make_p(self):
-        list_p = find_prime('p')
+    def make_p(self, val):
+        list_p = find_prime(val)
         while len(list_p) == 0:
-            print('Chosen range has no prime number!')
-            list_p = find_prime('p')
-        list_p = list(list_p)
+            list_q = find_prime(val+1)
         p = list_p[random.randrange(0, len(list_p))]
         return p
 
     # 지정한 범위 내 임의의 소수를 출력하는 함수
-    def make_q(self):
-        list_q = find_prime('q')
+    def make_q(self, val):
+        list_q = find_prime(val)
         while len(list_q) == 0:
-            print('Chosen range has no prime number!')
-            list_q = find_prime('q')
-        list_q = list(list_q)
+            list_q = find_prime(val+1)
         q = list_q[random.randrange(0, len(list_q))]
         return q
 
@@ -53,25 +49,35 @@ class RSA:
 
 
 # 암호화를 진행하는 함수
-def encrypt():
+def encrypt(param):
     rsa = RSA()
-    p = rsa.make_p()
-    q = rsa.make_q()
+    mesg = param["plaintext"]
+    e = param["e"]
+    n = param["n"]
+    """
+    p, q 생성과정 분리하기
+    p = rsa.make_p(prime_range)
+    q = rsa.make_q(prime_range)
+    # p == q인 경우 다시 q를 뽑는다.
+    while p == q:
+        q = rsa.make_q(prime_range)
+    
     [n, pi] = rsa.make_key(p, q)
     e = rsa.find_e(pi)
     d = rsa.find_d(e, pi)
-    mesg = input('Write a message to Encrypt: ')
-    log = "Encryping '" + mesg + "'"
+    """
 
+    """
+    text로 들어온 경우에 대해 -> 추후 변경
     code = [ord(char) for char in mesg]
     crypto = []
     for m in code:
         c = squareAndMultiply(m, e, n)
         crypto.append(c)
-    print('Public key: ' + str([e, n]))
-    print('Private key: ' + str([d, n]))
-    print('Encrypted message is', crypto)
-    print()
+    """
+    return squareAndMultiply(mesg, e, n)
+    
+    
 
 
 # 복호화를 진행하는 함수

@@ -42,17 +42,31 @@ def test():
 
 
 @app.route('/dec/rsa', methods=['POST', 'GET'])
-def post():
+def decrypt_rsa():
     result = request.get_json(silent=True)
     param = {
         'd': int(result['d']),
         'n': int(result['n']),
-        'ciphertext': int(result['ciphertext'])
+        'ciphertext': int(result['Ciphertext'])
     }
     
     response = {
-        "plaintext": str(RSA.decrypt(param))
+        "result": str(RSA.decrypt(param))
     }
+    return jsonify(response), 200
+
+@app.route('/enc/rsa', methods=['POST'])
+def encrypt_rsa():
+    result = request.get_json(silent=True)
+    param =  {
+        'e': int(result['e']),
+        'n': int(result['n']),
+        'plaintext': int(result['Plaintext'])
+    }
+
+    response = {
+        "result": str(RSA.encrypt(param))
+    } 
     return jsonify(response), 200
 
 
