@@ -1,19 +1,33 @@
 from Module.Tools.Calculator import squareAndMultiply, extendedEuclidean
+import random
+
 
 def decrypt(param):
-    q = 2934201397
-    a = 37
-    ya = 2174919958
-    ciphertext = (2909170161, 2565161545)
-    xa = 0
-    cal_ya = 1
-    # Find xa
-    while cal_ya != ya:
-        xa += 1
-        cal_ya = (cal_ya * a) % q
-
+    # ciphertext = (2909170161, 2565161545)
+    # a = 37
+    # p = 2934201397 -> p
+    ciphertext = param["ciphertext"]
+    a = param["a"]
+    p = param["p"]
+    xa = param["xa"]
+    
     # find inverse of k
-    k = squareAndMultiply(ciphertext[0], xa ,q)
-    k_inverse = extendedEuclidean(k, q)[2]
+    k = squareAndMultiply(ciphertext[0], xa ,p)
+    print(k)
+    k_inverse = extendedEuclidean(k, p)[2]
 
-    m = (ciphertext[1]*k_inverse) % q
+    mesg = (ciphertext[1]*k_inverse) % p
+    return mesg
+
+
+def encrypt(param):
+    ya = param["ya"] # 16
+    p = param["p"] # 31
+    a = param["a"] # 3
+    mesg = param["plaintext"]  #15
+
+    r = random.randrange(p)
+    k = (ya ** r) % p
+    c1 = (a ** r) % p
+    c2 = (k*mesg) % p
+    return [c1, c2]

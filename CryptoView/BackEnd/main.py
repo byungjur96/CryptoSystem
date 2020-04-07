@@ -18,30 +18,22 @@ def returnAlgList():
 def returnParams():
     response = {
         "enc" : {
-            "rsa": ['e', 'n'],
+            "RSA": ['e', 'n'],
             "DES": ['key'],
             "AES": ['key'],
-            "ElGamal": []
+            "ElGamal": ['ya', 'p', 'a']
         },
         "dec": {
-            "rsa": ['d', 'n'],
+            "RSA": ['d', 'n'],
             "DES": ['key'],
             "AES": ['key'],
-            "ElGamal": []
+            "ElGamal": ['xa', 'p', 'a']
         }
     }
     return jsonify(response), 200
 
 
-@app.route('/test', methods=['GET'])
-def test():
-    response = {
-        "ciphertext": "test"
-    }
-    return jsonify(response), 200
-
-
-@app.route('/rsa/dec', methods=['POST', 'GET'])
+@app.route('/RSA/dec', methods=['POST', 'GET'])
 def decrypt_rsa():
     result = request.get_json(silent=True)
     param = {
@@ -55,7 +47,8 @@ def decrypt_rsa():
     }
     return jsonify(response), 200
 
-@app.route('/rsa/enc', methods=['POST'])
+
+@app.route('/RSA/enc', methods=['POST', 'GET'])
 def encrypt_rsa():
     result = request.get_json(silent=True)
     param =  {
@@ -67,6 +60,36 @@ def encrypt_rsa():
     response = {
         "result": str(RSA.encrypt(param))
     } 
+    return jsonify(response), 200
+
+
+@app.route('/ElGamal/enc', methods=['POST', 'GET'])
+def encrypt_elgamal():
+    result = request.get_json(silent=True)
+    param = {
+        'ya': int(result['y']),
+        'p': int(result['p']),
+        'a': int(result['a']),
+        'plaintext': int(result['plaintext'])
+    }
+    response = {
+        "result": str(ElGamal.encrypt(param))
+    }
+    return jsonify(response), 200
+
+
+@app.route('/ElGamal/dec', methods=['POST', 'GET'])
+def decrypt_elgamal():
+    result = request.get_json(silent=True)
+    param = {
+        'a': result['a'],
+        'p': result['p'],
+        'xa': result['xa'],
+        'ciphertext': result['ciphertext']
+    }
+    response = {
+        "result" : str(ElGamal.decrypt(param))
+    }
     return jsonify(response), 200
 
 
