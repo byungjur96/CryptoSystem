@@ -5,7 +5,8 @@
             <div v-bind:class="sideBtnStyle"></div>
         </div>
         <h2> {{ returnName }} </h2>
-        <div id="info">I</div>
+        <img id="key" src="../assets/key.png" alt="Key">
+        
     </div>
 </template>
 
@@ -97,9 +98,10 @@ export default {
         transform: rotate( -45deg );
     }
 
-    #info {
+    #key {
         cursor: pointer;
-        color: white;
+        height: 20px;
+        margin:20px;
     }
 }
 </style>
