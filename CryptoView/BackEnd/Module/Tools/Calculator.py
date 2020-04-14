@@ -8,7 +8,7 @@ def find_prime(maximum):
                 state = False
                 break
         if state:
-            result.add(n)
+            result.append(n)
     return result
 
 # 최대공약수를 구하는 함수

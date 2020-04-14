@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 from flask import Flask, jsonify, request
 from Module import AES, DES, ElGamal, RSA
+import keygen
+
 from flask_cors import CORS
 
 # Creating a Web App
@@ -31,6 +33,15 @@ def returnParams():
         }
     }
     return jsonify(response), 200
+
+
+# 조건에 맞는 임의의 키 생성
+@app.route('/keygen/<alg>', methods=['GET'])
+def generate_key(alg):
+    print(alg)
+    result = keygen.key_separator(alg)
+    print(result)
+    return jsonify(result), 200
 
 
 @app.route('/RSA/dec', methods=['POST', 'GET'])

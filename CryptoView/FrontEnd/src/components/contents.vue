@@ -57,7 +57,6 @@ export default {
                 }
                 axios.post("http://0.0.0.0:5000/"+this.$store.state.algorithm+"/"+this.$data.work, param)
                     .then(res => {
-                        console.log(res.data);
                         this.$data.output = res.data["result"]
                     });
             } else {

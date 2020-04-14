@@ -5,7 +5,7 @@
             <div v-bind:class="sideBtnStyle"></div>
         </div>
         <h2> {{ returnName }} </h2>
-        <img id="key" src="../assets/key.png" alt="Key">
+        <img id="key" src="../assets/key.png" @click="openModal" alt="Key">
         
     </div>
 </template>
@@ -23,6 +23,9 @@ export default {
         changeMenuBtn: function() {
             this.$emit('changeMenuBtn');
         },
+        openModal: function() {
+            this.$store.commit('open_modal');
+        }
     },
     computed: {
         returnName: function() {
@@ -61,7 +64,7 @@ export default {
 
     #menu {
         width: 20px;
-        z-index: 1000;
+        z-index: 99;
         cursor: pointer;
     }
 

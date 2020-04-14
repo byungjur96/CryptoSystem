@@ -1,5 +1,6 @@
 <template>
   <div>
+  <Modal v-if="openModal"></Modal>
     <SideMenu 
       v-if="openSide"
       v-on:menuSelect="menuClickEvent">
@@ -16,6 +17,7 @@
 import NavHeader from './components/header.vue';
 import SideMenu from './components/side-menu.vue';
 import Contents from './components/contents.vue';
+import Modal from './components/keygen';
 
 export default {
   name: 'app',
@@ -26,7 +28,7 @@ export default {
     }
   },
   components: {
-    NavHeader, SideMenu, Contents
+    NavHeader, SideMenu, Contents, Modal
   },
   methods: {
     menuClickEvent: function() {
@@ -39,6 +41,9 @@ export default {
     },
     changeMode: function() {
       return this.$data.mode;
+    },
+    openModal: function() {
+      return this.$store.state.open_keygen_modal;
     }
   }
 }
@@ -53,5 +58,10 @@ export default {
     background-color: black;
     z-index: 999;
   } 
+#modal {
+  position:fixed;
+  width: 100vw;
+  height: 100vh;
+}
 }
 </style>
