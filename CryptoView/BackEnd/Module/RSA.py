@@ -1,23 +1,6 @@
 import random
 from Module.Tools.Calculator import *
 
-
-# 지정한 범위 내 임의의 소수를 출력하는 함수
-def make_p(val):
-    list_p = find_prime(val)
-    while len(list_p) == 0:
-        list_q = find_prime(val+1)
-    p = list_p[random.randrange(0, len(list_p))]
-    return p
-
-# 지정한 범위 내 임의의 소수를 출력하는 함수
-def make_q(val):
-    list_q = find_prime(val)
-    while len(list_q) == 0:
-        list_q = find_prime(val+1)
-    q = list_q[random.randrange(0, len(list_q))]
-    return q
-
 # n과 pi를 계산하는 함수
 def make_key(p, q):
     n = p * q

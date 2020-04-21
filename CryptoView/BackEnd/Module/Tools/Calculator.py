@@ -1,15 +1,61 @@
-# 범위 내의 소수를 모두 구하는 함수
-def find_prime(maximum):
+import time
+import random
+
+a_list = [2, 325, 9375, 28178, 450775, 9780504, 1795265022]
+
+# 범위의 값이 소수인지 빠르게 확인한다.
+def make_prime(maximum):
+    lst = []
+    for i in range(2, maximum + 1):
+        if miller_rabin_test(i, maximum):
+            lst.append(i)
+    ans = random.choice(lst)
+    while not prime_check(ans):
+        ans = random.choice(lst)
+    return ans
+
+# 값이 소수인지 판별하는 함수
+def prime_check(val):
     result = list()
-    for n in range(2, maximum):
-        state = True
-        for i in range(2, n):
-            if n % i == 0:
-                state = False
-                break
-        if state:
-            result.append(n)
-    return result
+    state = True
+    for i in range(2, val):
+        if val % i == 0:
+            state = False
+            break
+    return state
+
+# 밀러 라빈 소수 판정법을 통해 빠르게 pseudo-prime 여부를 확인한다.
+def miller_rabin_test(n, maximum_range):
+    # n이 2인 경우 참을 반환한다.
+    if n == 2:
+        return True
+    # n이 2가 아닌 짝수인 경우 거짓을 반환한다.
+    elif n % 2 == 0:
+        return False
+    # n이 홀수인 경우 테스트를 진행한다.
+    else:
+        d = n - 1
+        s = 0
+    while d % 2 == 1:
+        s += 1
+        d // 2
+
+    for a in a_list:
+        if squareAndMultiply(a, d, n) != 1:
+            return False
+    for i in range(15):
+        a = random.randrange(1,maximum_range)
+        if squareAndMultiply(a, d, n) != 1:
+            return False
+    for r in range(s-1):
+        for a in a_list:
+            if squareAndMultiply(a, d*(2**r), n) != -1:
+                return False
+        for i in range(15):
+            a = random.randrange(1,maximum_range)
+            if squareAndMultiply(a, d, n) != 1:
+                return False
+    return True
 
 # 최대공약수를 구하는 함수
 def gcd(a, b):

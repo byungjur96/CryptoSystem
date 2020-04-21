@@ -1,4 +1,5 @@
 from Module import RSA
+from Module.Tools import Calculator
 
 def key_separator(algorithm):
     if algorithm == "RSA":
@@ -6,12 +7,11 @@ def key_separator(algorithm):
 
 def rsa_key():
     # p, q 생성과정 분리하기
-    p = RSA.make_p(10**2)
-    q = RSA.make_q(10**2)
+    p = Calculator.make_prime(10**4)
+    q = Calculator.make_prime(10**4)
     # p == q 인 경우 다시 q를 뽑는다.
     while p == q:
-        q = RSA.make_q(10**2)
-    [n, pi] = RSA.make_key(p, q)
+        q = Calculator.make_prime(10**4)
     e = RSA.find_e(pi)
     d = RSA.find_d(e, pi)
 
