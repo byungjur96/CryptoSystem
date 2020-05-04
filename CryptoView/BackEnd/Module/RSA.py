@@ -9,13 +9,11 @@ def make_key(p, q):
 
 # pi와 서로소이면서 pi보다 작은 수들을 모두 구해서 그 중 임의의 값을 e로 지정하는 함수
 def find_e(pi):
-    list_e = set({})
-    for i in range(2, pi):
-        if coprime(i, pi):
-            list_e.add(i)
-    list_e = list(list_e)
-    e = list_e[random.randrange(0, len(list_e))]
+    e = random.randrange(0, pi)
+    while not coprime(e, pi):
+        e = random.randrange(0, pi)
     return e
+
 
 # (e*d) mod pi = 1 인 d를 구하는 함수
 def find_d(e, pi):

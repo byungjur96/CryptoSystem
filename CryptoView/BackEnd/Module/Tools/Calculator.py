@@ -98,3 +98,14 @@ def squareAndMultiply(a, e, n):
         if bin_e[i] == '1':
             b = (b*a) % n
     return b
+
+
+def isPrimitiveRoot(a, p):
+    squareSet = []
+    count = 1
+    while count < p:
+        val = squareAndMultiply(a, count, p)
+        if val in squareSet:
+            return False
+        count += 1
+    return True
