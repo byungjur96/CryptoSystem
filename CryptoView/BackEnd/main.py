@@ -78,10 +78,10 @@ def encrypt_rsa():
 def encrypt_elgamal():
     result = request.get_json(silent=True)
     param = {
-        'ya': int(result['y']),
+        'ya': int(result['ya']),
         'p': int(result['p']),
         'a': int(result['a']),
-        'plaintext': int(result['plaintext'])
+        'plaintext': int(result['Plaintext'])
     }
     response = {
         "result": str(ElGamal.encrypt(param))
@@ -96,7 +96,7 @@ def decrypt_elgamal():
         'a': result['a'],
         'p': result['p'],
         'xa': result['xa'],
-        'ciphertext': result['ciphertext']
+        'ciphertext': result['Ciphertext']
     }
     response = {
         "result" : str(ElGamal.decrypt(param))
