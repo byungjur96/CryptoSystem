@@ -31,17 +31,17 @@ def rsa_key():
 
 def elgamal_key():
     p = Calculator.make_prime(10**4)
-    g = None
-    primitive_root = []
-    no_duplicate = True
-    while no_duplicate:
+    a = None
+    no_duplicate = False
+    while not no_duplicate:
         print('g')
-        g = random.randrange(2, p-1)
-        no_duplicate = Calculator.isPrimitiveRoot(g, p)
-    e = random.randrange(2, p-2)
-    y = Calculator.squareAndMultiply(g, e, p)
+        a = random.randrange(2, p-1)
+        no_duplicate = Calculator.isPrimitiveRoot(a, p)
+    xb = random.randrange(2, p-2)
+    yb = Calculator.squareAndMultiply(a, xb, p)
 
     key = {
-        "Public Key": [y],
-        "Private Key": [e]
+        "Public Key (p, 𝜶, y)": [p, a, yb],
+        "Private Key(p, 𝜶, x)": [p, a, xb]
     }
+    return key

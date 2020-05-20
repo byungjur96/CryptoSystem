@@ -99,13 +99,12 @@ def squareAndMultiply(a, e, n):
             b = (b*a) % n
     return b
 
-
+# a가 p의 원시근인지 판별한다
 def isPrimitiveRoot(a, p):
-    squareSet = []
-    count = 1
-    while count < p:
-        val = squareAndMultiply(a, count, p)
-        if val in squareSet:
-            return False
-        count += 1
-    return True
+    square = 1
+    while squareAndMultiply(a, square, p) != 1:
+        square += 1
+    if square == p-1:
+        return True
+    else:
+        return False
