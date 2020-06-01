@@ -9,6 +9,17 @@ ip_table = [
     63, 55, 47, 39, 31, 23, 15, 7
 ]
 
+reverse_ip_table = [
+    40, 8, 48, 16, 56, 24, 64, 32,
+    39, 7, 47, 15, 55, 23, 63, 31,
+    38, 6, 46, 14, 54, 22, 62, 30,
+    37, 5, 45, 13, 53, 21, 61, 29,
+    36, 4, 44, 12, 52, 20, 60, 28,
+    35, 3, 43, 11, 51, 19, 59, 27,
+    34, 2, 42, 10, 50, 18, 58, 26,
+    33, 1, 41, 9, 49, 17, 57, 25
+]
+
 expanded_table = [
         32, 1, 2, 3, 4, 5,
         4, 5, 6, 7, 8, 9,
@@ -19,6 +30,28 @@ expanded_table = [
         24, 25, 26, 27, 28, 29,
         28, 29, 30, 31, 32, 1
     ]
+
+pc1 = [
+    57, 49, 41, 33, 25, 17,  9,
+    1, 58, 50, 42, 34, 26, 18,
+    10, 2, 59, 51, 43, 35, 27,
+    19, 11, 3, 60, 52, 44, 36,
+    63, 55, 47, 39, 31, 23, 15,
+    7, 62, 54, 46, 38, 30, 22,
+    14, 6, 61, 53, 45, 37, 29,
+    21, 13, 5, 28, 20, 12, 4
+	]
+
+pc2 = [
+		14, 17, 11, 24, 1, 5,
+		3, 28, 15, 6, 21, 10,
+		23, 19, 12, 4, 26, 8,
+		16, 7, 27, 20, 13, 2,
+		41, 52, 31, 37, 47, 55,
+		30, 40, 51, 45, 33, 48,
+		44, 49, 39, 56, 34, 53,
+		46, 42, 50, 36, 29, 32
+	]
 
 S_BOX = [     
     [[14, 4, 13, 1, 2, 15, 11, 8, 3, 10, 6, 12, 5, 9, 0, 7],
@@ -67,7 +100,7 @@ S_BOX = [
 def initial_permutation(string):
     result = ""
     for i in range(64):
-        result += string[ip_table[i]-1]
+        result += (string[ip_table[i]-1])
     return result
 
 def xor(a, b):
@@ -87,20 +120,101 @@ def xor(a, b):
 
 def f_func(r, key):
     expanded = ""
+    result = ""
     for i in range(48):
         expanded += r[expanded_table[i] - 1]
     val = xor(expanded, key)
+    for i in range(8):
+        temp = val[i*6:(i+1)*6]
+        column = int("0b"+temp[0]+temp[5], 2)
+        row = int("0b"+temp[1:5], 2)
+        result += bin(S_BOX[i][column-1][row-1])[2:].zfill(4)
+    return result
 
-def round(l, r, key):
-    next_l = r
-    nexl_r = xor(f_func(r, key), r)
-    return next_l, next_r
+# key: 7자리의 string
+def make_key(key):
+    key_set = []  # 만들어진 키를 저장하는 list
+    whole_key = ""  # parity bit가 추가된 64 bit의 키
+    ascii_key = ""  # 56 bit의 키
+    # 7자리의 string으로된 key를 56 bit의 이진수로 바꾼다
+    for k in key:
+        ascii_key += bin(ord(k))[2:].zfill(8)
+    # 56 bit의 key에 parity bit를 추가하여 64 bit로 만든다
+    for i in range(8):
+        val = ascii_key[i*7:(i+1)*7]
+        if val.count("1") % 2 == 0:
+            val+="0"
+        else:
+            val+="1"
+        whole_key += val
+    # PC-1 전치를 진행한다
+    permuted_1 = ""
+    for i in range(56):
+        permuted_1 += whole_key[pc1[i] - 1]
+    left = permuted_1[:28]
+    right = permuted_1[28:]
+    for i in range(16):
+        # 1, 2, 9, 16 번째이면 left shift를 1번 실행한다
+        if i == 0 or i == 1 or i == 8 or i == 15:
+            left = left[1:] + left[0]
+            right = right[1:] + right[0]
+        # 그 이외의 경우에는 left shift를 2번 실행한다
+        else:
+            left = left[2:] + left[:2]
+            right = right[2:] + right[:2]
+        
+        merged = left + right
+        subkey = ""
+        for i in range(48):
+            subkey += merged[pc2[i] - 1]
+        key_set.append(subkey)
+        left = merged[:24]
+        right = merged[24:]
+    return key_set
 
-def block_encrypt(block):
-    temp = initial_permutation(block)
-    l0 = temp[:32]
-    r0 = temp[32:]
 
+def mesg_bit(string):
+    result = []
+    while len(string) > 8:
+        target = string[:8]
+        string = string[8:]
+        block = ""
+        for t in target:
+            block+=(bin(ord(t))[2:].zfill(8))
+        result.append(block)
+    string.zfill(8)
+    last = ""
+    for s in string:
+        last+=(bin(ord(s))[2:].zfill(8))
+    result.append(last.zfill(64))
+    return result
 
+def reverse_ip(string):
+    result = ""
+    for i in range(64):
+        result += string[reverse_ip_table[i]-1]
+    return string
+
+def encrypt_block(left, right, key):
+    after_f = f_func(right, key)
+    return right, after_f
+
+def encrypt(param):
+    mesg = param["plaintext"]
+    key = param["key"]
+    cipher = ""
+    key_list = make_key(key)
+    mesg_block = mesg_bit(mesg)
+    for block in mesg_block:
+        swapped_mesg = initial_permutation(block)
+        l, r = swapped_mesg[:32], swapped_mesg[32:]
+        for i in range(16):
+            l, r = encrypt_block(l, r, key_list[i])
+        bin_cipher = reverse_ip(l+r)
+        for i in range(len(bin_cipher)//8):
+            input_bin = int(bin_cipher[i*8:(i+1)*8],2)
+            cipher += chr(input_bin)
+    return cipher
+    
 def decrypt():
     return

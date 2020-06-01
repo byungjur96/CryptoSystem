@@ -89,6 +89,19 @@ def encrypt_elgamal():
     return jsonify(response), 200
 
 
+@app.route('/DES/enc', methods=['POST', 'GET'])
+def encrypt_des():
+    result = request.get_json(silent=True)
+    param = {
+        'plaintext': result["Plaintext"],
+        'key': result["key"]
+    }
+    response = {
+        "result": str(DES.encrypt(param))
+    }
+    return jsonify(response), 200
+
+
 @app.route('/ElGamal/dec', methods=['POST', 'GET'])
 def decrypt_elgamal():
     result = request.get_json(silent=True)
