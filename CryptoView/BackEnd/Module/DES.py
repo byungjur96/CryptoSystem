@@ -131,28 +131,22 @@ def f_func(r, key):
         result += bin(S_BOX[i][column-1][row-1])[2:].zfill(4)
     return result
 
-# key: 7자리의 string
+# key: 8자리의 string
 def make_key(key):
     key_set = []  # 만들어진 키를 저장하는 list
-    whole_key = ""  # parity bit가 추가된 64 bit의 키
-    ascii_key = ""  # 56 bit의 키
-    # 7자리의 string으로된 key를 56 bit의 이진수로 바꾼다
+    ascii_key = ""  # 64 bit의 키
+    
     for k in key:
         ascii_key += bin(ord(k))[2:].zfill(8)
-    # 56 bit의 key에 parity bit를 추가하여 64 bit로 만든다
-    for i in range(8):
-        val = ascii_key[i*7:(i+1)*7]
-        if val.count("1") % 2 == 0:
-            val+="0"
-        else:
-            val+="1"
-        whole_key += val
+    ascii_key = ascii_key.zfill(64)
+    print(ascii_key)
     # PC-1 전치를 진행한다
     permuted_1 = ""
     for i in range(56):
-        permuted_1 += whole_key[pc1[i] - 1]
+        permuted_1 += ascii_key[pc1[i] - 1]
     left = permuted_1[:28]
     right = permuted_1[28:]
+    print("Left: ", left)
     for i in range(16):
         # 1, 2, 9, 16 번째이면 left shift를 1번 실행한다
         if i == 0 or i == 1 or i == 8 or i == 15:
@@ -162,14 +156,14 @@ def make_key(key):
         else:
             left = left[2:] + left[:2]
             right = right[2:] + right[:2]
-        
         merged = left + right
         subkey = ""
         for i in range(48):
             subkey += merged[pc2[i] - 1]
+        print(subkey)
         key_set.append(subkey)
-        left = merged[:24]
-        right = merged[24:]
+        # left = merged[:24]
+        # right = merged[24:]
     return key_set
 
 
@@ -210,9 +204,9 @@ def encrypt(param):
         l, r = swapped_mesg[:32], swapped_mesg[32:]
         for i in range(16):
             l, r = encrypt_block(l, r, key_list[i])
-        bin_cipher = reverse_ip(l+r)
+        bin_cipher = reverse_ip(r+l)
         for i in range(len(bin_cipher)//8):
-            input_bin = int(bin_cipher[i*8:(i+1)*8],2)
+            input_bin = int(bin_cipher[i*8:(i+1)*8][1:],2)
             cipher += chr(input_bin)
     return cipher
     
