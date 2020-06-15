@@ -96,6 +96,7 @@ S_BOX = [
     ]
 ]
 
+p_box = [16, 7, 20, 21, 29, 12, 28, 17, 1, 15, 23, 26, 5, 18, 31, 10, 2, 8, 24, 14, 32, 27, 3, 9, 19, 13, 30, 6, 22, 11, 4, 25]
 
 def initial_permutation(string):
     result = ""
@@ -118,35 +119,19 @@ def xor(a, b):
             result += "1"
     return result
 
-def f_func(r, key):
-    expanded = ""
-    result = ""
-    for i in range(48):
-        expanded += r[expanded_table[i] - 1]
-    val = xor(expanded, key)
-    for i in range(8):
-        temp = val[i*6:(i+1)*6]
-        column = int("0b"+temp[0]+temp[5], 2)
-        row = int("0b"+temp[1:5], 2)
-        result += bin(S_BOX[i][column-1][row-1])[2:].zfill(4)
-    return result
-
 # key: 8자리의 string
 def make_key(key):
     key_set = []  # 만들어진 키를 저장하는 list
     ascii_key = ""  # 64 bit의 키
-    
     for k in key:
         ascii_key += bin(ord(k))[2:].zfill(8)
     ascii_key = ascii_key.zfill(64)
-    print(ascii_key)
     # PC-1 전치를 진행한다
     permuted_1 = ""
     for i in range(56):
         permuted_1 += ascii_key[pc1[i] - 1]
     left = permuted_1[:28]
     right = permuted_1[28:]
-    print("Left: ", left)
     for i in range(16):
         # 1, 2, 9, 16 번째이면 left shift를 1번 실행한다
         if i == 0 or i == 1 or i == 8 or i == 15:
@@ -160,10 +145,7 @@ def make_key(key):
         subkey = ""
         for i in range(48):
             subkey += merged[pc2[i] - 1]
-        print(subkey)
         key_set.append(subkey)
-        # left = merged[:24]
-        # right = merged[24:]
     return key_set
 
 
@@ -189,26 +171,82 @@ def reverse_ip(string):
         result += string[reverse_ip_table[i]-1]
     return string
 
+def f_func(r, key):
+    expanded = ""
+    result = ""
+    # 32 bit -> 48 bit
+    for i in range(48):
+        expanded += r[expanded_table[i] - 1]
+    val = xor(expanded, key)
+    for i in range(8):
+        temp = val[i*6:(i+1)*6]
+        column = int("0b"+temp[0]+temp[5], 2)
+        row = int("0b"+temp[1:5], 2)
+        result += bin(S_BOX[i][column-1][row-1])[2:].zfill(4)
+    return result
+
+def s_box(string):
+    result = ""
+    for i in range(8):
+        temp = string[i*6 : (i+1)*6]
+        column = int("0b"+temp[0]+temp[5], 2) - 1
+        row = int("0b"+temp[1:5], 2) - 1
+        val = bin(S_BOX[i][column-1][row-1])[2:].zfill(4)
+        result += val
+    return result
+
 def encrypt_block(left, right, key):
     after_f = f_func(right, key)
     return right, after_f
 
 def encrypt(param):
-    mesg = param["plaintext"]
-    key = param["key"]
-    cipher = ""
-    key_list = make_key(key)
-    mesg_block = mesg_bit(mesg)
+    mesg = param["plaintext"]  # Plaintext
+    key = param["key"]  # Key로 들어온 string
+    cipher = ""  # Ciphertext
+    key_list = make_key(key)  # Subkey List
+    mesg_block = mesg_bit(mesg)  # 64 bit 씩 나눈 Plaintext
+    # 64 bit의 블록에 대해서 encrytion 진행
     for block in mesg_block:
         swapped_mesg = initial_permutation(block)
-        l, r = swapped_mesg[:32], swapped_mesg[32:]
+        left = swapped_mesg[:32]
+        right = swapped_mesg[32:]
+        # 암호화 진행
         for i in range(16):
-            l, r = encrypt_block(l, r, key_list[i])
-        bin_cipher = reverse_ip(r+l)
-        for i in range(len(bin_cipher)//8):
-            input_bin = int(bin_cipher[i*8:(i+1)*8][1:],2)
+            left, right = block_encrypt(left, right, key_list[i])
+        reversed_mesg = reverse_ip(right + left)
+        # ASCII 코드로 변환
+        for i in range(len(reversed_mesg) // 8):
+            input_bin = int(reversed_mesg[i*8:(i+1)*8][1:],2)
             cipher += chr(input_bin)
     return cipher
+
+def decrypt(param):
+    mesg = param["ciphertext"]
+    key = param["key"]
+    plaintext = ""
+    key_list = make_key(key)
+    cipher_block = mesg_bit(mesg)
+    for block in cipher_block:
+        left, right = block[:32], block[32:]
+        for i in range(15, -1, -1):
+            left, right = block_encrypt(left, right, key_list[i])
+        block_mesg = left + right
+        for i in range(len(block_mesg) // 8):
+            input_bin = int(block_mesg[i*8:(i+1)*8][1:],2)
+            plaintext += chr(input_bin)
+    return plaintext
+
+def block_encrypt(left, right, subkey):
+    next_left = right
+    expanded_right = ""
+    print(right)
+    for i in range(48):
+        expanded_right += right[expanded_table[i] - 1]
+    xor_result = xor(expanded_right, subkey)
+    sbox_result = s_box(xor_result)
+    pbox_result = ""
+    for i in range(32):
+        pbox_result += sbox_result[p_box[i]-1]
+    next_right = xor(left, pbox_result)
+    return next_left, next_right
     
-def decrypt():
-    return
